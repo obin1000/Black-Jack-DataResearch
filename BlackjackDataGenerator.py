@@ -12,7 +12,7 @@ PLAYER = "Player"
 TIED = "Tied"
 
 WORKBOOK = 'BlackJackData.xlsx'  # Name of the file to read and write from
-DATATOCOLLECT = 1000  # The number of games to play
+DATATOCOLLECT = 10000  # The number of games to play
 ranks = [_ for _ in range(2, 11)] + ['JACK', 'QUEEN', 'KING', 'ACE']  # Values of the cards
 suits = ['SPADE', 'HEART ', 'DIAMOND', 'CLUB']  # Suits of the cards
 maxPlayerCards = 8  # Max cards for the Player, used for columns
@@ -102,27 +102,26 @@ if __name__ == "__main__":
         worksheet.write(currentLine, dealerColumnPointer, str(dealer_hand[0]))
         dealerColumnPointer += 1
 
-        # This loops only ends when a winner or tie is found
+        # Play game till a winner or tie is found
         while playing:
             valuePlayer = hand_value(player_hand)
-            if valuePlayer == 21:
-                worksheet.write(currentLine, playerValueColumn, valuePlayer)
-                worksheet.write(currentLine, dealerValueColumn, card_value(dealer_hand[0]))  # Dealer has not played yet
-                worksheet.write(currentLine, winnerColumn, PLAYER)
+            valueDealer = hand_value(dealer_hand)
+            # Game ends if player or dealer has 21 or dies when higher than 21
+            if valuePlayer >= 21:
                 break
-            elif valuePlayer >= 21:
-                worksheet.write(currentLine, playerValueColumn, valuePlayer)
-                worksheet.write(currentLine, dealerValueColumn, card_value(dealer_hand[0]))  # Dealer has not played yet
-                worksheet.write(currentLine, winnerColumn, DEALER)
+            elif valueDealer >= 21:
                 break
             else:
-                # There are 2 options: draw or pass, player will draw till at least a value of 12 and then draw at random
+                # Always daw till at least a value of 12
                 if valuePlayer <= 11:
                     player_hand.append(deck.pop())
                     worksheet.write(currentLine, playerColumnPointer, str(player_hand[len(player_hand) - 1]))
                     playerColumnPointer += 1
                     continue
-
+                # Always pass if value is 18 or higher
+                if valuePlayer >= 18:
+                    break
+                # Make random choices to draw or to pass
                 choice = randint(0, 2)
                 # Choice one is draw card
                 if choice == 1:
@@ -133,38 +132,52 @@ if __name__ == "__main__":
 
                 # Choice two is pass
                 if choice == 0:
-                    # Dealer draws to at least a value of 17
-                    while hand_value(dealer_hand) < 17:
-                        dealer_hand.append(deck.pop())
-                        worksheet.write(currentLine, dealerColumnPointer, str(dealer_hand[len(dealer_hand) - 1]))
-                        dealerColumnPointer += 1
-
-                    # Compare the value of both hands and determine the result
-                    valueDealer = hand_value(dealer_hand)
-                    if valueDealer >= 21:
-                        worksheet.write(currentLine, playerValueColumn, valuePlayer)
-                        worksheet.write(currentLine, dealerValueColumn, valueDealer)
-                        worksheet.write(currentLine, winnerColumn, PLAYER)
-                        break
-
-                    if valueDealer < valuePlayer:
-                        worksheet.write(currentLine, playerValueColumn, valuePlayer)
-                        worksheet.write(currentLine, dealerValueColumn, valueDealer)
-                        worksheet.write(currentLine, winnerColumn, PLAYER)
-                        break
-
-                    if valueDealer > valuePlayer:
-                        worksheet.write(currentLine, playerValueColumn, valuePlayer)
-                        worksheet.write(currentLine, dealerValueColumn, valueDealer)
-                        worksheet.write(currentLine, winnerColumn, DEALER)
-                        break
-
-                    if valueDealer == valuePlayer:
-                        worksheet.write(currentLine, playerValueColumn, valuePlayer)
-                        worksheet.write(currentLine, dealerValueColumn, valueDealer)
-                        worksheet.write(currentLine, winnerColumn, TIED)
-                        break
                     break
+
+        # Dealer draws to at least a value of 17
+        while hand_value(dealer_hand) < 17:
+            dealer_hand.append(deck.pop())
+            worksheet.write(currentLine, dealerColumnPointer, str(dealer_hand[len(dealer_hand) - 1]))
+            dealerColumnPointer += 1
+
+        # Calculate value of both hands and check who won
+        valuePlayer = hand_value(player_hand)
+        valueDealer = hand_value(dealer_hand)
+        if valuePlayer == 21:
+            worksheet.write(currentLine, playerValueColumn, valuePlayer)
+            worksheet.write(currentLine, dealerValueColumn, valueDealer)
+            worksheet.write(currentLine, winnerColumn, PLAYER)
+
+        elif valueDealer == 21:
+            worksheet.write(currentLine, playerValueColumn, valuePlayer)
+            worksheet.write(currentLine, dealerValueColumn, valueDealer)
+            worksheet.write(currentLine, winnerColumn, DEALER)
+
+        elif valuePlayer > 21:
+            worksheet.write(currentLine, playerValueColumn, valuePlayer)
+            worksheet.write(currentLine, dealerValueColumn, valueDealer)
+            worksheet.write(currentLine, winnerColumn, DEALER)
+
+        elif valueDealer > 21:
+            worksheet.write(currentLine, playerValueColumn, valuePlayer)
+            worksheet.write(currentLine, dealerValueColumn, valueDealer)
+            worksheet.write(currentLine, winnerColumn, PLAYER)
+
+        elif valueDealer < valuePlayer:
+            worksheet.write(currentLine, playerValueColumn, valuePlayer)
+            worksheet.write(currentLine, dealerValueColumn, valueDealer)
+            worksheet.write(currentLine, winnerColumn, PLAYER)
+
+        elif valueDealer > valuePlayer:
+            worksheet.write(currentLine, playerValueColumn, valuePlayer)
+            worksheet.write(currentLine, dealerValueColumn, valueDealer)
+            worksheet.write(currentLine, winnerColumn, DEALER)
+
+        elif valueDealer == valuePlayer:
+            worksheet.write(currentLine, playerValueColumn, valuePlayer)
+            worksheet.write(currentLine, dealerValueColumn, valueDealer)
+            worksheet.write(currentLine, winnerColumn, TIED)
+
         # Reset the variables for the next game
         currentLine += 1
         dealerColumnPointer = maxPlayerCards + 3

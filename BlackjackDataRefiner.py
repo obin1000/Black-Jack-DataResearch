@@ -25,6 +25,8 @@ if __name__ == "__main__":
     difficultWins = 0  # Player wins difficult
     difficultLoses = 0  # Player wins difficult
     difficultTies = 0  # Player wins difficult
+    difficultDraw = 0  # Player wins difficult
+    difficultPass = 0  # Player wins difficult
     difficultWinsDraw = 0  # Player wins by drawing in difficult case
     difficultWinsPass = 0
     difficultLosesDraw = 0  # Player loses by passing in difficult case
@@ -53,7 +55,7 @@ if __name__ == "__main__":
         # Loop over the player hand
         for column in range(bdg.maxPlayerCards):
             tempValue = readsheet.cell_value(row, 3 + column)
-            # extract the starting hand from the sheet
+            # extract the starting hand from the sheet, so the first two cards
             if column <= 1:
                 starterHand.append(bdg.getCardFromString(tempValue))
                 starterHandValue = bdg.hand_value(starterHand)
@@ -64,26 +66,26 @@ if __name__ == "__main__":
                     winner = readsheet.cell_value(row, bdg.winnerColumn)
                     if winner == bdg.PLAYER:
                         difficultWins += 1
-                        # If then player won check if he drew or passed
+                        # If the player won check if he drew or passed
                         card3 = bdg.getCardFromString(readsheet.cell_value(row, 6))
                         if card3[0] == '':  # if passed
+                            difficultPass += 1
                             difficultWinsPass += 1
                         else:
+                            difficultDraw += 1
                             difficultWinsDraw += 1
                     elif winner == bdg.DEALER:
                         difficultLoses += 1
-                        # If then player lost check if he drew or passed
+                        # If the player lost check if he drew or passed
                         card3 = bdg.getCardFromString(readsheet.cell_value(row, 6))
                         if card3[0] == '':  # if passed
+                            difficultPass += 1
                             difficultLosesPass += 1
                         else:
+                            difficultDraw += 1
                             difficultLosesDraw += 1
                     else:
                         difficultTies += 1
-
-    print("Total: " + str(TotalRows) + " Total games: " + str(difficultGames) + " Dealer Wins: " + str(difficultLoses) + " Player Wins: " + str(
-        difficultWins) + " Tie Games: " + str(difficultTies) + " winpass: " + str(difficultWinsPass) + " windraw: " + str(
-        difficultWinsDraw))
 
     # Write refined data to the sheet for the graphs
     columnpointer1 = 0
@@ -107,6 +109,12 @@ if __name__ == "__main__":
     columnpointer1 += 1
     writesheet.write(0, columnpointer1, 'DTied')
     writesheet.write(1, columnpointer1, difficultTies)
+    columnpointer1 += 1
+    writesheet.write(0, columnpointer1, 'DDraw')
+    writesheet.write(1, columnpointer1, difficultDraw)
+    columnpointer1 += 1
+    writesheet.write(0, columnpointer1, 'DPass')
+    writesheet.write(1, columnpointer1, difficultPass)
     columnpointer1 += 2
     writesheet.write(0, columnpointer1, 'DWinPass')
     writesheet.write(1, columnpointer1, difficultWinsPass)
