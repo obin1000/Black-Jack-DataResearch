@@ -7,30 +7,103 @@ import BlackjackDataGenerator as bdg
 
 DATASOURCE = bdg.WORKBOOK  # Name of the file to read from
 WORKBOOK = 'charts.xlsx'  # Name of the file to write the graphs to
-DIFFICULTHAND = [14, 15, 16]
+DIFFICULTHAND = [12, 13, 14, 15, 16, 17]
+WIN = 1
+LOSE = 0
+DRAW = 1
+PASS = 0
+
+
+class Counter:
+
+    def __init__(self, handvalue):
+        self.identifier = handvalue
+        self.DrawTotal = 0
+        self.DrawWin = 0
+        self.DrawLose = 0
+
+        self.PassTotal = 0
+        self.PassWin = 0
+        self.PassLose = 0
+
+    # WinOrLose: 1 = Win 0 = Lose
+    # DrawOrPass: 1 = Draw 0 = Pass
+    def write_result(self, WinOrLose, DrawOrPass):
+        if DrawOrPass:  # Draw
+            self.DrawTotal += 1
+            if WinOrLose:  # Win
+                self.DrawWin += 1
+            else:  # Lose
+                self.DrawLose += 1
+        else:  # Pass
+            self.PassTotal += 1
+            if WinOrLose:  # Win
+                self.PassWin += 1
+            else:  # Lose
+                self.PassLose += 1
+
+    def write_result_to_sheet(self):
+        write_result(str(self.identifier) + 'DrawTotal', self.DrawTotal)
+        write_result(str(self.identifier) + 'DrawWin', self.DrawWin, str(self.identifier),
+                     self.DrawWin / self.DrawTotal)
+        write_result(str(self.identifier) + 'DrawLose', self.DrawLose)
+        write_result(str(self.identifier) + 'PassTotal', self.PassTotal)
+        write_result(str(self.identifier) + 'PassWin', self.PassWin, '', '', str(self.identifier),
+                     self.PassWin / self.PassTotal)
+        write_result(str(self.identifier) + 'PassLose', self.PassLose)
+
+
+def write_to_counter(handvalue, winorlose, draworpass):
+    if handvalue == 12:
+        counter12.write_result(winorlose, draworpass)
+    elif handvalue == 13:
+        counter13.write_result(winorlose, draworpass)
+    elif handvalue == 14:
+        counter14.write_result(winorlose, draworpass)
+    elif handvalue == 15:
+        counter15.write_result(winorlose, draworpass)
+    elif handvalue == 16:
+        counter16.write_result(winorlose, draworpass)
+    elif handvalue == 17:
+        counter17.write_result(winorlose, draworpass)
+
+
+columnpointer = 0
+
+
+def write_result(*data):
+    global columnpointer
+    count = 0
+    for dat in data:
+        writesheet.write(count, columnpointer, dat)
+        if isinstance(dat, str):
+            if len(dat) < 5:
+                writesheet.set_column(columnpointer, columnpointer, 5)
+            else:
+                writesheet.set_column(columnpointer, columnpointer, len(dat))
+        count += 1
+    columnpointer += 1
+
 
 if __name__ == "__main__":
     # Reading an excel file using Python
-    TotalRows = 0  # Count the number of games in the sheet
-    PlayerWins = 0  # Count the number of games won by the player
-    DealerWins = 0  # Count the number of games won by the dealer
-    TieGames = 0  # Count the number of games tied
-    Errors = 0  # Count the number of invalid rows
     reader = xlrd.open_workbook(DATASOURCE)  # Create a reader to read the xlsx file
     readsheet = reader.sheet_by_index(0)  # Select the sheet with the data
     workbook = xlsxwriter.Workbook(WORKBOOK)
     writesheet = workbook.add_worksheet()  # Add new sheet for the graphs
 
-    difficultGames = 0  # Number of difficult cases
-    difficultWins = 0  # Player wins difficult
-    difficultLoses = 0  # Player wins difficult
-    difficultTies = 0  # Player wins difficult
-    difficultDraw = 0  # Player wins difficult
-    difficultPass = 0  # Player wins difficult
-    difficultWinsDraw = 0  # Player wins by drawing in difficult case
-    difficultWinsPass = 0
-    difficultLosesDraw = 0  # Player loses by passing in difficult case
-    difficultLosesPass = 0
+    TotalRows = 0  # Count the number of games in the sheet
+    PlayerWins = 0  # Count the number of games won by the player
+    DealerWins = 0  # Count the number of games won by the dealer
+    TieGames = 0  # Count the number of games tied
+    Errors = 0  # Count the number of invalid rows
+
+    counter12 = Counter(12)
+    counter13 = Counter(13)
+    counter14 = Counter(14)
+    counter15 = Counter(15)
+    counter16 = Counter(16)
+    counter17 = Counter(17)
 
     # Loop to refine the data
     for row in range(readsheet.nrows):
@@ -50,104 +123,82 @@ if __name__ == "__main__":
         else:
             Errors += 1
 
-        starterHand = []
-        starterHandValue = 0
+        Hand = []
+        HandValue = 0
+        currentColumn = 0
         # Loop over the player hand
         for column in range(bdg.maxPlayerCards):
-            tempValue = readsheet.cell_value(row, 3 + column)
-            # extract the starting hand from the sheet, so the first two cards
-            if column <= 1:
-                starterHand.append(bdg.getCardFromString(tempValue))
-                starterHandValue = bdg.hand_value(starterHand)
-                # Extract difficult starterhand
-                if column == 1 and starterHandValue in DIFFICULTHAND:
-                    difficultGames += 1
-                    # Check if the player won
-                    winner = readsheet.cell_value(row, bdg.winnerColumn)
-                    if winner == bdg.PLAYER:
-                        difficultWins += 1
-                        # If the player won check if he drew or passed
-                        card3 = bdg.getCardFromString(readsheet.cell_value(row, 6))
-                        if card3[0] == '':  # if passed
-                            difficultPass += 1
-                            difficultWinsPass += 1
-                        else:
-                            difficultDraw += 1
-                            difficultWinsDraw += 1
-                    elif winner == bdg.DEALER:
-                        difficultLoses += 1
-                        # If the player lost check if he drew or passed
-                        card3 = bdg.getCardFromString(readsheet.cell_value(row, 6))
-                        if card3[0] == '':  # if passed
-                            difficultPass += 1
-                            difficultLosesPass += 1
-                        else:
-                            difficultDraw += 1
-                            difficultLosesDraw += 1
+            currentColumn = 3 + column  # Read the cards of the player from start to end
+            tempValue = readsheet.cell_value(row, currentColumn)
+            Hand.append(bdg.getCardFromString(tempValue))  # Add the card to the hand
+            HandValue = bdg.hand_value(Hand)  # Calculate the current value of the hand
+            # Extract difficult hand
+            if HandValue in DIFFICULTHAND:
+                # Check if the player won
+                winner = readsheet.cell_value(row, bdg.winnerColumn)
+                if winner == bdg.PLAYER:
+                    # If the player won check if he drew or passed
+                    nextCard = bdg.getCardFromString(readsheet.cell_value(row, currentColumn + 1))
+                    if nextCard[0] == '':  # if passed
+                        write_to_counter(HandValue, WIN, PASS)
                     else:
-                        difficultTies += 1
+                        write_to_counter(HandValue, WIN, DRAW)
+                elif winner == bdg.DEALER:
+                    # If the player lost, check if he drew or passed
+                    nextCard = bdg.getCardFromString(readsheet.cell_value(row, currentColumn + 1))
+                    if nextCard[0] == '':  # if passed
+                        write_to_counter(HandValue, LOSE, PASS)
+                    else:
+                        write_to_counter(HandValue, LOSE, DRAW)
 
     # Write refined data to the sheet for the graphs
-    columnpointer1 = 0
-    writesheet.write(0, columnpointer1, bdg.DEALER)
-    writesheet.write(1, columnpointer1, DealerWins)
-    columnpointer1 += 1
-    writesheet.write(0, columnpointer1, bdg.PLAYER)
-    writesheet.write(1, columnpointer1, PlayerWins)
-    columnpointer1 += 1
-    writesheet.write(0, columnpointer1, bdg.TIED)
-    writesheet.write(1, columnpointer1, TieGames)
-    columnpointer1 += 2
-    writesheet.write(0, columnpointer1, 'Difficult')
-    writesheet.write(1, columnpointer1, difficultGames)
-    columnpointer1 += 1
-    writesheet.write(0, columnpointer1, 'DWin')
-    writesheet.write(1, columnpointer1, difficultWins)
-    columnpointer1 += 1
-    writesheet.write(0, columnpointer1, 'DLose')
-    writesheet.write(1, columnpointer1, difficultLoses)
-    columnpointer1 += 1
-    writesheet.write(0, columnpointer1, 'DTied')
-    writesheet.write(1, columnpointer1, difficultTies)
-    columnpointer1 += 1
-    writesheet.write(0, columnpointer1, 'DDraw')
-    writesheet.write(1, columnpointer1, difficultDraw)
-    columnpointer1 += 1
-    writesheet.write(0, columnpointer1, 'DPass')
-    writesheet.write(1, columnpointer1, difficultPass)
-    columnpointer1 += 2
-    writesheet.write(0, columnpointer1, 'DWinPass')
-    writesheet.write(1, columnpointer1, difficultWinsPass)
-    columnpointer1 += 1
-    writesheet.write(0, columnpointer1, 'DWinDraw')
-    writesheet.write(1, columnpointer1, difficultWinsDraw)
-    columnpointer1 += 1
-    writesheet.write(0, columnpointer1, 'DLosePass')
-    writesheet.write(1, columnpointer1, difficultLosesPass)
-    columnpointer1 += 1
-    writesheet.write(0, columnpointer1, 'DLoseDraw')
-    writesheet.write(1, columnpointer1, difficultLosesDraw)
+    write_result(bdg.DEALER, DealerWins)
+    write_result(bdg.PLAYER, PlayerWins)
+    write_result(bdg.TIED, TieGames)
+    counter12.write_result_to_sheet()
+    counter13.write_result_to_sheet()
+    counter14.write_result_to_sheet()
+    counter15.write_result_to_sheet()
+    counter16.write_result_to_sheet()
+    counter17.write_result_to_sheet()
 
-    # Create a new column chart  to display the number of wins
-    chart = workbook.add_chart({'type': 'column'})
+    chartTotalWins = workbook.add_chart({'type': 'column'})  # Create chart
+    chartTotalWins.add_series({'values': ['Sheet1', 1, 0, 1, 2],  # Add configuration to chart
+                               'name': 'Wins',
+                               'categories': ['Sheet1', 0, 0, 0, 2]})
 
-    # Add the configuration to the chart
-    chart.add_series({'values': ['Sheet1', 1, 0, 1, 2],
-                      'name': 'Wins',
-                      'categories': ['Sheet1', 0, 0, 0, 2],
-                      'fill': {'color': 'blue'}})
-
-    chart.set_title({
+    chartTotalWins.set_title({
         'name': 'Number of wins'
     })
-    chart.set_x_axis({
+    chartTotalWins.set_x_axis({
         'name': 'Possible outcome'
     })
-    chart.set_y_axis({
+    chartTotalWins.set_y_axis({
         'name': 'Number of wins'
     })
 
-    # Insert the chart into the worksheet.
-    writesheet.insert_chart(4, 2, chart)
+    chartDifficultHand = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})  # Create chart
+    chartDifficultHand.add_series({'values': ['Sheet1', 3, 4, 3, 40],  # Data for the Draw wins
+                                   'name': 'Draw card',
+                                   'categories': ['Sheet1', 2, 4, 2, 40]})
+    chartDifficultHand.add_series({'values': ['Sheet1', 5, 4, 5, 40],  # Data for the Pass wins
+                                   'name': 'Pass',
+                                   'categories': ['Sheet1', 4, 4, 4, 40]})
+
+    chartDifficultHand.set_size({'x_scale': 1.5, 'y_scale': 2})
+
+    chartDifficultHand.set_title({
+        'name': 'Win chance by passing or drawing for each card value'
+    })
+    chartDifficultHand.set_x_axis({
+        'name': 'passing or drawing for each card value'
+    })
+    chartDifficultHand.set_y_axis({
+        'name': 'Win chance'
+    })
+
+    # Insert the charts into the worksheet.
+    writesheet.insert_chart(8, 2, chartTotalWins)
+    writesheet.insert_chart(8, 10, chartDifficultHand)
 
     workbook.close()
