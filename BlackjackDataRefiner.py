@@ -7,7 +7,7 @@ import BlackjackDataGenerator as bdg
 
 DATASOURCE = bdg.WORKBOOK  # Name of the file to read from
 WORKBOOK = 'charts.xlsx'  # Name of the file to write the graphs to
-DIFFICULTHAND = [12, 13, 14, 15, 16, 17]
+DIFFICULTHAND = [11, 12, 13, 14, 15, 16, 17]
 WIN = 1
 LOSE = 0
 DRAW = 1
@@ -43,18 +43,16 @@ class Counter:
                 self.PassLose += 1
 
     def write_result_to_sheet(self):
-        write_result(str(self.identifier) + 'DrawTotal', self.DrawTotal)
-        write_result(str(self.identifier) + 'DrawWin', self.DrawWin, str(self.identifier),
-                     self.DrawWin / self.DrawTotal)
-        write_result(str(self.identifier) + 'DrawLose', self.DrawLose)
-        write_result(str(self.identifier) + 'PassTotal', self.PassTotal)
-        write_result(str(self.identifier) + 'PassWin', self.PassWin, '', '', str(self.identifier),
-                     self.PassWin / self.PassTotal)
-        write_result(str(self.identifier) + 'PassLose', self.PassLose)
+        write_result(str(self.identifier), self.DrawTotal, self.DrawWin, self.DrawLose, self.DrawWin / self.DrawTotal,
+                     self.PassTotal, self.PassWin,
+                     self.PassLose, self.PassWin / self.PassTotal,
+                     (self.DrawWin / self.DrawTotal) - (self.PassWin / self.PassTotal))
 
 
 def write_to_counter(handvalue, winorlose, draworpass):
-    if handvalue == 12:
+    if handvalue == 11:
+        counter11.write_result(winorlose, draworpass)
+    elif handvalue == 12:
         counter12.write_result(winorlose, draworpass)
     elif handvalue == 13:
         counter13.write_result(winorlose, draworpass)
@@ -98,6 +96,7 @@ if __name__ == "__main__":
     TieGames = 0  # Count the number of games tied
     Errors = 0  # Count the number of invalid rows
 
+    counter11 = Counter(11)
     counter12 = Counter(12)
     counter13 = Counter(13)
     counter14 = Counter(14)
@@ -155,6 +154,9 @@ if __name__ == "__main__":
     write_result(bdg.DEALER, DealerWins)
     write_result(bdg.PLAYER, PlayerWins)
     write_result(bdg.TIED, TieGames)
+    write_result('Cardvalue', 'DrawTotal', 'DrawWin', 'DrawLose', 'DrawWinChance', 'PassTotal', 'PassWin', 'PassLose',
+                 'PassWinChance', 'DiffWinPass')
+    counter11.write_result_to_sheet()
     counter12.write_result_to_sheet()
     counter13.write_result_to_sheet()
     counter14.write_result_to_sheet()
@@ -168,37 +170,38 @@ if __name__ == "__main__":
                                'categories': ['Sheet1', 0, 0, 0, 2]})
 
     chartTotalWins.set_title({
-        'name': 'Number of wins'
+        'name': 'Total wins'
     })
     chartTotalWins.set_x_axis({
-        'name': 'Possible outcome'
+        'name': 'Game outcome'
     })
     chartTotalWins.set_y_axis({
         'name': 'Number of wins'
     })
 
-    chartDifficultHand = workbook.add_chart({'type': 'column', 'subtype': 'stacked'})  # Create chart
-    chartDifficultHand.add_series({'values': ['Sheet1', 3, 4, 3, 40],  # Data for the Draw wins
-                                   'name': 'Draw card',
-                                   'categories': ['Sheet1', 2, 4, 2, 40]})
-    chartDifficultHand.add_series({'values': ['Sheet1', 5, 4, 5, 40],  # Data for the Pass wins
-                                   'name': 'Pass',
-                                   'categories': ['Sheet1', 4, 4, 4, 40]})
+    chartDifficultHand = workbook.add_chart({'type': 'column'})
+    chartDifficultHand.add_series({'name': 'Draw card',
+                                   'categories': ['Sheet1', 0, 4, 0, 9],
+                                   'values': ['Sheet1', 4, 4, 4, 9]})
+
+    chartDifficultHand.add_series({'name': 'Pass',
+                                   'categories': ['Sheet1', 0, 4, 0, 9],
+                                   'values': ['Sheet1', 8, 4, 8, 9]})
 
     chartDifficultHand.set_size({'x_scale': 1.5, 'y_scale': 2})
 
     chartDifficultHand.set_title({
-        'name': 'Win chance by passing or drawing for each card value'
+        'name': 'Win for each card value'
     })
     chartDifficultHand.set_x_axis({
-        'name': 'passing or drawing for each card value'
+        'name': 'Card value'
     })
     chartDifficultHand.set_y_axis({
         'name': 'Win chance'
     })
 
     # Insert the charts into the worksheet.
-    writesheet.insert_chart(8, 2, chartTotalWins)
-    writesheet.insert_chart(8, 10, chartDifficultHand)
+    writesheet.insert_chart(12, 2, chartTotalWins)
+    writesheet.insert_chart(12, 12, chartDifficultHand)
 
     workbook.close()
