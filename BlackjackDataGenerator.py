@@ -122,7 +122,7 @@ if __name__ == "__main__":
                 if valuePlayer >= 18:
                     break
                 # Make random choices to draw or to pass
-                choice = randint(0, 2)
+                choice = randint(0, 1)
                 # Choice one is draw card
                 if choice == 1:
                     player_hand.append(deck.pop())

@@ -7,7 +7,7 @@ import BlackjackDataGenerator as bdg
 
 DATASOURCE = bdg.WORKBOOK  # Name of the file to read from
 WORKBOOK = 'charts.xlsx'  # Name of the file to write the graphs to
-DIFFICULTHAND = [11, 12, 13, 14, 15, 16, 17]
+DIFFICULTHAND = [12, 13, 14, 15, 16, 17]
 WIN = 1
 LOSE = 0
 DRAW = 1
@@ -50,9 +50,7 @@ class Counter:
 
 
 def write_to_counter(handvalue, winorlose, draworpass):
-    if handvalue == 11:
-        counter11.write_result(winorlose, draworpass)
-    elif handvalue == 12:
+    if handvalue == 12:
         counter12.write_result(winorlose, draworpass)
     elif handvalue == 13:
         counter13.write_result(winorlose, draworpass)
@@ -96,7 +94,6 @@ if __name__ == "__main__":
     TieGames = 0  # Count the number of games tied
     Errors = 0  # Count the number of invalid rows
 
-    counter11 = Counter(11)
     counter12 = Counter(12)
     counter13 = Counter(13)
     counter14 = Counter(14)
@@ -156,7 +153,6 @@ if __name__ == "__main__":
     write_result(bdg.TIED, TieGames)
     write_result('Cardvalue', 'DrawTotal', 'DrawWin', 'DrawLose', 'DrawWinChance', 'PassTotal', 'PassWin', 'PassLose',
                  'PassWinChance', 'DiffWinPass')
-    counter11.write_result_to_sheet()
     counter12.write_result_to_sheet()
     counter13.write_result_to_sheet()
     counter14.write_result_to_sheet()
