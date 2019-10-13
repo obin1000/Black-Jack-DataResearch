@@ -187,13 +187,13 @@ if __name__ == "__main__":
     chartDifficultHand.set_size({'x_scale': 1.5, 'y_scale': 2})
 
     chartDifficultHand.set_title({
-        'name': 'Win for each card value'
+        'name': 'Probability to win by hand value'
     })
     chartDifficultHand.set_x_axis({
-        'name': 'Card value'
+        'name': 'Hand value'
     })
     chartDifficultHand.set_y_axis({
-        'name': 'Win chance'
+        'name': 'Probability to win'
     })
 
     # Insert the charts into the worksheet.

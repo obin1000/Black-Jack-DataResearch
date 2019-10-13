@@ -1,6 +1,7 @@
 from random import shuffle
 from random import randint
 import xlsxwriter
+import sys
 
 """CREDITS TO: https://brilliant.org/wiki/programming-blackjack/#"""
 "Generates a xlsx file with N number of simulated blackjack games"
@@ -12,7 +13,7 @@ PLAYER = "Player"
 TIED = "Tied"
 
 WORKBOOK = 'BlackJackData.xlsx'  # Name of the file to read and write from
-DATATOCOLLECT = 1000000  # The number of games to play
+DATATOCOLLECT = int(sys.argv[1])  # The number of games to play
 ranks = [_ for _ in range(2, 11)] + ['JACK', 'QUEEN', 'KING', 'ACE']  # Values of the cards
 suits = ['SPADE', 'HEART ', 'DIAMOND', 'CLUB']  # Suits of the cards
 maxPlayerCards = 8  # Max cards for the Player, used for columns
