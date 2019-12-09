@@ -13,7 +13,10 @@ PLAYER = "Player"
 TIED = "Tied"
 
 WORKBOOK = 'BlackJackData.xlsx'  # Name of the file to read and write from
-DATATOCOLLECT = int(sys.argv[1])  # The number of games to play
+try:
+    DATATOCOLLECT = int(sys.argv[1])  # The number of games to play
+except IndexError:
+    DATATOCOLLECT = 10000
 ranks = [_ for _ in range(2, 11)] + ['JACK', 'QUEEN', 'KING', 'ACE']  # Values of the cards
 suits = ['SPADE', 'HEART ', 'DIAMOND', 'CLUB']  # Suits of the cards
 maxPlayerCards = 8  # Max cards for the Player, used for columns
