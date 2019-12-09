@@ -1,0 +1,5 @@
+\section{Discussion}
+What could have gone wrong? \\
+There are several factors on which this experiment could have gone wrong. First of all the program to generate the data uses the function shuffle() from the random library in Python. This function is used to shuffle the deck of cards. Due to computers cannot generate random numbers and I don't know how the shuffling is done in this function, I cannot know for sure that this function shuffles the deck in a reliable way. If the shuffle is not random, this can result in repetitive decks of cards, which games based on this deck would result in the same results, which could make the win probability turnout higher or lower than they really are. \\ 
+This does not apply tot the randint() function from the same library, which is used for the user decision in drawing or passing. The counters in the refinement proof that this function gave a good 50/50 ratio in draw and pass, this is what it is intended to do.
+ 

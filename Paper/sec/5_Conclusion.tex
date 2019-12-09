@@ -1,0 +1,17 @@
+\section{Conclusions and Future Work}
+The goal of this research is to find out what the best move is in the casino game Blackjack with each hand value and to confirm the thought that the dealer always wins more games than the player. \\
+First the total number of wins: The simulation of Blackjack gives an accurate representation of the game. After playing one million games in this simulation, it shows that the dealer indeed wins more games than the player. 22 percent more games to be exact in the case of this simulation. So this proves the hypothesis, in Blackjack, the dealer wins more games than the player. \\
+\\
+The best move for the player is the move with the highest probability to win. For the values bellow 12 and over 17 this is clear, draw if under 12 and pass if over 17. Between these values these choice gets more difficult. The results shows for 12 and 13 a clear advantage to draw a card and for 16 and 17 a clear advantage by passing. But for 14 and 15 things get very close. On the long run, one should draw a card with a value of 14 and pass at a value of 15. So in short:
+\begin{itemize}
+    \item < 12: Draw
+    \item 12: Draw
+    \item 13: Draw
+    \item 14: Draw
+    \item 15: Pass
+    \item 16: Pass
+    \item 17: Pass
+    \item > 17: Pass
+\end{itemize}
+This paper is based on generation one time, one million games of Blackjack. To further proof the working of this experiment in more depth, one could generate multiple sets of one million games of Blackjack and compare the differences between these sets. Expected is that the differences between these sets should be minimal. The only differences in the data will be coincidences, which should be canceled out by the large size of the dataset.
+

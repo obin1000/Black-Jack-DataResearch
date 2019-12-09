@@ -1,0 +1,29 @@
+\section{Experimental setup}
+All code used for generating and refining data in this experiment is open-source and can be found on GitHub: \url{https://github.com/obin1000/Blackjack-DataResearch} \\
+The experiment consists of two parts: \\
+- Generating data \\
+- Refining this data \\
+ \\
+Both parts make use of the programming language Python. \\
+Generating the data is done by repeatedly playing games of Blackjack in a simulation. This results of the simulation are written to an .xlsx (Excel) file as storage. The hardest part in designing a simulator like this is, is how you will simulate the choices the player has to make. In the simulator for this experiment, the following rules are defined for the player:
+\begin{enumerate}
+  \item If the hand value is lower than 12, always draw a card. The player cannot lose by drawing one more card with a value lower than 12.
+  \item If the hand value is higher than 17, always pass. There are few cards that the player can draw, that won't result in a value higher 21 in this case. \\
+\end{enumerate}
+So when the player gets an hand value between 11 and 18 he has two options, draw or pass. This decision is made randomly by the Python function randint(0,1), which generates a random number between 0 and 1. When it is an 1 the player draws a card and rolls again a new number for the next decision, when it is 0 the player passes.
+
+Refining the data is done by scanning over the dataset that was created by the generator. While scanning it keeps track of the following counters:
+\begin{itemize}
+  \item The total number of wins by the dealer
+  \item The total number of wins by the player
+  \item The number of tied games
+  \item For each hand value between 11 and 18:
+    \begin{itemize}
+        \item The value of the hand
+        \item The total number of times the player decided to draw a card
+        \item The number of wins by drawing a card
+        \item The total number of times the player decided to pass
+        \item The number of wins by passing
+    \end{itemize}
+\end{itemize}
+The results of the refinement are written to a different .xlsx (Excel) sheet as storage (The Python library is not able to edit exsisting .xslx files, only create new ones). With this data it also automatically adds some graphs to display the data.

@@ -1,0 +1,78 @@
+\documentclass[acmtog,review]{acmart}
+
+\usepackage{booktabs} % For formal tables
+
+\settopmatter{printacmref=false} % Removes citation info after abstract
+\renewcommand\footnotetextcopyrightpermission[1]{} % removes footnote with conference information in first column
+\usepackage{fancyhdr}
+\usepackage{url}
+ 
+\pagestyle{fancy}
+\fancyhf{}
+\rfoot{\thepage}
+
+%\pagestyle{plain} % removes running headers
+
+% Use the "authoryear" citation style, and make sure citations are in [square brackets].
+\citestyle{acmauthoryear}
+\setcitestyle{square}
+
+% A useful command for controlling the number of authors per row.
+% The default value of "authorsperrow" is 2.
+\settopmatter{authorsperrow=4}
+
+\begin{document}
+
+% Title. 
+% If your title is long, consider \title[short title]{full title} - "short title" will be used for running heads.
+\title{The Probability of Winning at Blackjack}
+\subtitle{Research Design, Amsterdam, September 2019}
+
+% Author
+\author{Robin Vonk}
+\affiliation{%
+  \institution{Amsterdam University of Applied Sciences}}
+
+\maketitle
+
+% a couple of paragraphs describing your project
+\section*{Abstract}
+This paper takes a look at the game played at every casino over the world, Blackjack. Results are gathered by simulation games of Blackjack in a Python program. With this approach a very large dataset can be generated in a matter of minutes. The following questions will be answered: 
+\begin{itemize}
+  \item What is the best move a player in Blackjack can make, for each possible value in his hand?
+  \item "The dealer wins, overall, more games than the player", is that true?
+\end{itemize}
+This is tested with a generated dataset with the results of one million games of Blackjack. After refining the data it results in that the dealer indeed wins more games than the player. In total about 22 percent more games to be exact. \\
+This refinement also shows that when the player does the following moves with the corresponding hand value, this will result in the highest probability to win:
+\begin{itemize}
+    \item < 12: Draw
+    \item 12: Draw
+    \item 13: Draw
+    \item 14: Draw
+    \item 15: Pass
+    \item 16: Pass
+    \item 17: Pass
+    \item > 17: Pass
+\end{itemize}
+
+
+% the other sections
+\input{sec/1_Introduction.tex}
+\input{sec/2_BlackjackRules.tex}
+\input{sec/3_ExperimentalSetup.tex}
+\input{sec/4_Results.tex}
+\input{sec/5_Conclusion.tex}
+\input{sec/6_Discussion.tex}
+
+% \begin{acks}
+% The authors would like to thank \dots.
+% \end{acks}
+
+% select the reference format (leave this)
+% \bibliographystyle{ACM-Reference-Format}
+
+% specify the bibliography (.bib) file
+% place your references in this bib file
+% \bibliography{main}
+
+\end{document}
