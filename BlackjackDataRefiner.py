@@ -6,7 +6,7 @@ import BlackjackDataGenerator as bdg
 "This cannot add the charts to the existing xlsx file, so it creates it own"
 
 DATASOURCE = bdg.WORKBOOK  # Name of the file to read from
-WORKBOOK = 'charts.xlsx'  # Name of the file to write the graphs to
+WORKBOOK = 'BlackJackDataCharts.xlsx'  # Name of the file to write the graphs to
 DIFFICULTHAND = [12, 13, 14, 15, 16, 17]
 WIN = 1
 LOSE = 0
