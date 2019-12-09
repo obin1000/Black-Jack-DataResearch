@@ -13,9 +13,9 @@ Enter the new folder
 ``` shell
 cd Blackjack_Data_Research/
 ```
-Generate the data set with python
+Generate the data set with python, providing the size of the set (in this example 100000)
 ``` shell
-python BlackjackDataGenerator.py
+python BlackjackDataGenerator.py 10000
 ```
 Refine the generated data set with python
 ``` shell
