@@ -1,7 +1,10 @@
-# Black Jack Data Research
+# Blackjack Data 
 
-## Requirements
+## Dependencies
 Python
+```shell script
+pip install xlsxwriter tqdm
+```
 
 ## How to use
 
@@ -15,9 +18,9 @@ cd Blackjack_Data_Research/
 ```
 Generate the data set with python, providing the size of the set (in this example 100000)
 ``` shell
-python BlackjackDataGenerator.py 100000
+python blackjack_data_generator.py 100000
 ```
 Refine the generated data set with python
 ``` shell
-python BlackjackDataRefiner.py
+python blackjack_data_refiner.py
 ```

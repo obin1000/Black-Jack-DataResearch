@@ -128,3 +128,5 @@ dmypy.json
 .idea/
 
 *.zip
+
+blackjack-data-generator-and-refiner.iml
