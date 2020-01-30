@@ -72,6 +72,7 @@ def hand_value(hand):
 
 
 if __name__ == "__main__":
+    print('Generating blackjack data')
     player_column_pointer = 3  # Current column to write the player card to
     dealer_column_pointer = MAX_PLAYER_CARDS + 3  # Current column to write the dealer card to
     current_line = 1  # Current row to write to
@@ -198,4 +199,5 @@ if __name__ == "__main__":
     # Cleanup
     progress_bar.close()
     print('Done!')
+    print('Results written to: {}'.format(WORKBOOK))
     workbook.close()

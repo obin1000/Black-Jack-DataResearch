@@ -92,6 +92,7 @@ def write_result(*data):
 
 
 if __name__ == "__main__":
+    print('Reading dataset: {}'.format(DATA_SOURCE))
     # Reading an excel file using Python
     reader = xlrd.open_workbook(DATA_SOURCE)  # Create a reader to read the xlsx file
     read_sheet = reader.sheet_by_index(0)  # Select the sheet with the data
@@ -211,5 +212,5 @@ if __name__ == "__main__":
 
     progress_bar.close()
     print('Done!')
-
+    print('Results written to: {}'.format(WORKBOOK))
     workbook.close()
