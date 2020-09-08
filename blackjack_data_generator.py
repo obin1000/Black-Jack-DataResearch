@@ -46,7 +46,7 @@ def card_value(card_in):
     rank = card_in[0]
     if rank in RANKS[0:-4]:
         return int(rank)
-    elif rank is 'ACE':
+    elif rank == 'ACE':
         return 11
     else:
         return 10
@@ -57,7 +57,7 @@ def hand_value(hand):
     # Naively sum up the cards in the deck.
     tmp_value = sum(card_value(_) for _ in hand)
     # Count the number of Aces in the hand.
-    num_aces = len([_ for _ in hand if _[0] is 'ACE'])
+    num_aces = len([_ for _ in hand if _[0] == 'ACE'])
 
     # Aces can count for 1, or 11. If it is possible to bring the value of
     # The hand under 21 by making 11 -> 1 substitutions, do so.

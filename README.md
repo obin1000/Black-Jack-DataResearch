@@ -3,7 +3,7 @@
 ## Dependencies
 Python
 ```shell script
-pip install xlsxwriter tqdm
+pip install xlsxwriter tqdm xlrd
 ```
 
 ## How to use
